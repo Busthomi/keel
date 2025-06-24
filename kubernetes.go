@@ -40,3 +40,19 @@ func homeDir() string {
     }
     return os.Getenv("USERPROFILE") // for Windows
 }
+
+// MarshalYAML marshals a Kubernetes object into YAML bytes.
+func MarshalYAML(obj interface{}) ([]byte, error) {
+    return yaml.Marshal(obj)
+}
+
+// MarshalYAMLToStdout marshals the object and prints it to stdout.
+func MarshalYAMLToStdout(obj interface{}) error {
+    out, err := MarshalYAML(obj)
+    if err != nil {
+        return err
+    }
+    fmt.Println("---")
+    fmt.Println(string(out))
+    return nil
+}
