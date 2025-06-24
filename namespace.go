@@ -1,42 +1,25 @@
 package keel
 
 import (
-    "context"
-
     corev1 "k8s.io/api/core/v1"
     metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type NamespaceManager struct {
-    client *Client
+type NamespaceManager struct{}
+
+func NewNamespaceManager() *NamespaceManager {
+    return &NamespaceManager{}
 }
 
-func NewNamespaceManager(client *Client) *NamespaceManager {
-    return &NamespaceManager{client: client}
-}
-
-func (n *NamespaceManager) Create(name string) (*corev1.Namespace, error) {
-    ns := &corev1.Namespace{
+// Build creates a namespace object (but doesn't apply it to Kubernetes).
+func (n *NamespaceManager) Build(name string) *corev1.Namespace {
+    return &corev1.Namespace{
+        TypeMeta: metav1.TypeMeta{
+            Kind:       "Namespace",
+            APIVersion: "v1",
+        },
         ObjectMeta: metav1.ObjectMeta{
             Name: name,
         },
     }
-
-    return n.client.KubeClient.CoreV1().Namespaces().Create(context.TODO(), ns, metav1.CreateOptions{})
-}
-
-func (n *NamespaceManager) Get(name string) (*corev1.Namespace, error) {
-    return n.client.KubeClient.CoreV1().Namespaces().Get(context.TODO(), name, metav1.GetOptions{})
-}
-
-func (n *NamespaceManager) List() ([]corev1.Namespace, error) {
-    nsList, err := n.client.KubeClient.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
-    if err != nil {
-        return nil, err
-    }
-    return nsList.Items, nil
-}
-
-func (n *NamespaceManager) Delete(name string) error {
-    return n.client.KubeClient.CoreV1().Namespaces().Delete(context.TODO(), name, metav1.DeleteOptions{})
 }
