@@ -4,6 +4,8 @@ import (
     "flag"
     "path/filepath"
 	"os"
+	"fmt"
+	"sigs.k8s.io/yaml"
     "k8s.io/client-go/kubernetes"
     "k8s.io/client-go/tools/clientcmd"
 )
